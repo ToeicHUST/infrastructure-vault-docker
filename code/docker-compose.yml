@@ -9,7 +9,8 @@ services:
       - ./cloudflare.key:/vault/config/cloudflare.key
       - ./vault_data:/vault/file
     environment:
-      VAULT_ADDR: "https://0.0.0.0:8200"
+      VAULT_ADDR: "https://127.0.0.1:8200"
+      VAULT_SKIP_VERIFY: "true"
       VAULT_API_ADDR: "https://127.0.0.1:8200"
       VAULT_CLUSTER_ADDR: "https://127.0.0.1:8201"
       VAULT_LOCAL_CONFIG: |
