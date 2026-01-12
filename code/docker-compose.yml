@@ -1,0 +1,37 @@
+services:
+  vault:
+    image: hashicorp/vault:1.21
+    ports:
+      - "443:8200"
+      - "8201:8201"
+    volumes:
+      - ./cloudflare.crt:/vault/config/cloudflare.crt
+      - ./cloudflare.key:/vault/config/cloudflare.key
+      - ./vault_data:/vault/file
+    environment:
+      VAULT_ADDR: "https://0.0.0.0:8200"
+      VAULT_API_ADDR: "https://127.0.0.1:8200"
+      VAULT_CLUSTER_ADDR: "https://127.0.0.1:8201"
+      VAULT_LOCAL_CONFIG: |
+        {
+          "storage": {
+            "raft": {
+              "path": "/vault/file",
+              "node_id": "node1"
+            }
+          },
+          "listener": {
+            "tcp": {
+              "address": "0.0.0.0:8200",
+              "cluster_address": "0.0.0.0:8201",
+              "tls_disable": 0,
+              "tls_cert_file": "/vault/config/cloudflare.crt",
+              "tls_key_file": "/vault/config/cloudflare.key"
+            }
+          },
+          "ui": true,
+          "disable_mlock": true
+        }
+    cap_add:
+      - IPC_LOCK
+    command: server
